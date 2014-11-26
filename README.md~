@@ -16,3 +16,5 @@ Instructions
 5) Your RMC workspace is now setup along with anything else you will need to develop for RMC. 
 
 6) roslaunch rmc_simulation gazebo.launch       <--- Try this to get gazebo up and running with RMC model
+
+test
