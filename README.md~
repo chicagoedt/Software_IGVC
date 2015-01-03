@@ -18,4 +18,3 @@ Instructions
 6) roslaunch rmc_simulation gazebo.launch       <--- Try this to get gazebo up and running with RMC model
 
 test
-test2
