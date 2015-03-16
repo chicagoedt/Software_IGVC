@@ -19,10 +19,9 @@ generate_messages(
 #)
 
 catkin_package(
-    CATKIN_DEPENDS
+    CATKIN_DEPENDS message_runtime
     INCLUDE_DIRS include
-    LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS roscpp)
+    LIBRARIES ${PROJECT_NAME})
 
 
 include_directories(include ${catkin_INCLUDE_DIRS})
