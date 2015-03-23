@@ -40,7 +40,11 @@ class Fitline(LaneDetection):
         # code from http://stackoverflow.com/a/14192660/341505
         # then apply fitline() function
         [vx, vy, x, y] = cv2.fitLine(
-            points, cv2.cv.CV_DIST_L2, 0, 0.001, 0.001
+            points=points,
+            distType=cv2.cv.CV_DIST_L2,
+            param=0,
+            reps=0.001,
+            aeps=0.001
         )
 
         # Now find two extreme points on the line to draw line
@@ -49,11 +53,11 @@ class Fitline(LaneDetection):
 
         # Finally draw the line
         cv2.line(
-            roi,
-            (roi.shape[1] - 1, righty),
-            (0, lefty),
-            255,
-            2
+            img=roi,
+            pt1=(roi.shape[1] - 1, righty),
+            pt2=(0, lefty),
+            color=255,
+            thickness=2
         )
 
         final_image = roi

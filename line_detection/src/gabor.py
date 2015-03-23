@@ -36,13 +36,15 @@ class Gabor(LaneDetection):
         roi = LaneDetection.get_roi(self, cv2_image)
 
         # apply Gabor filter
-        gabor_kernel = cv2.getGaborKernel((self.gabor_ksize, self.gabor_ksize),
-                                          self.gabor_sigma,
-                                          self.gabor_theta * math.pi / 180,
-                                          self.gabor_lambda,
-                                          self.gabor_gamma)
+        gabor_kernel = cv2.getGaborKernel(
+            ksize=(self.gabor_ksize, self.gabor_ksize),
+            sigma=self.gabor_sigma,
+            theta=self.gabor_theta * math.pi / 180,
+            lambd=self.gabor_lambda,
+            gamma=self.gabor_gamma
+        )
 
-        final_image = cv2.filter2D(roi, -1, gabor_kernel)
+        final_image = cv2.filter2D(src=roi, ddepth=-1, kernel=gabor_kernel)
 
         final_image_message = LaneDetection.cv2_to_ros_message(
             self, final_image

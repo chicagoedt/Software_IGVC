@@ -36,7 +36,13 @@ class Backproject(LaneDetection):
         self.histogram = np.loadtxt(
             self.package_path + "/misc/training_images/histogram.txt"
         )
-        cv2.normalize(self.histogram, self.histogram, 0, 255, cv2.NORM_MINMAX)
+        cv2.normalize(
+            src=self.histogram,
+            dst=self.histogram,
+            alpha=0,
+            beta=255,
+            norm_type=cv2.NORM_MINMAX
+        )
 
     # this is what gets called when an image is received
     def image_callback(self, ros_image):
@@ -47,8 +53,9 @@ class Backproject(LaneDetection):
         # run backprojection to remove grass
         mask = self.get_backprojection_mask(roi)
         mask = np.dstack((mask, mask, mask))
-        # only include pixels from thresh
-        final_image = cv2.bitwise_and(roi, mask)
+
+        # only include pixels from mask
+        final_image = cv2.bitwise_and(src1=roi, src2=mask)
 
         final_image_message = LaneDetection.cv2_to_ros_message(
             self, final_image
@@ -61,26 +68,31 @@ class Backproject(LaneDetection):
     def get_backprojection_mask(self, image):
 
         # Convert BGR to HSV
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(src=image, code=cv2.COLOR_BGR2HSV)
 
         # begin HISTOGRAM BACKPROJECTION
         # backprojection on 3d histogram
         backproject = cv2.calcBackProject(
-            [hsv], [0, 1], self.histogram,
-            [
+            images=[hsv],
+            channels=[0, 1],
+            hist=self.histogram,
+            ranges=[
                 self.hue_low, self.hue_high,
                 self.saturation_low, self.saturation_high
             ],
-            1
+            scale=1
         )
 
         dst = backproject
         # Now convolute with circular disc
         disc = cv2.getStructuringElement(
-            cv2.MORPH_ELLIPSE,
-            (self.backprojection_kernel_size, self.backprojection_kernel_size)
+            shape=cv2.MORPH_ELLIPSE,
+            ksize=(
+                self.backprojection_kernel_size,
+                self.backprojection_kernel_size
+            )
         )
-        cv2.filter2D(dst, -1, disc, dst)  # do we need this convolution???
+        cv2.filter2D(src=dst, ddepth=-1, kernel=disc, dst=dst)
 
         # invert dst (because the backprojection chooses what we DON'T want)
         dst = 255 - dst

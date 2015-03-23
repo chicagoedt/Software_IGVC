@@ -35,8 +35,8 @@ class Dilate(LaneDetection):
         # dilate each pixel using kernel with dilate_size
         if self.dilate_size > 0 and self.dilate_iterations > 0:
             kernel = np.ones((self.dilate_size, self.dilate_size), np.uint8)
-            final_image = cv2.dilate(roi,
-                                     kernel,
+            final_image = cv2.dilate(src=roi,
+                                     kernel=kernel,
                                      iterations=self.dilate_iterations)
         else:
             rospy.logwarn("dilate parameters invalid! Won't perform dilate!")

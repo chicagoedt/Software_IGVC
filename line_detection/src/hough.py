@@ -33,21 +33,22 @@ class Hough(LaneDetection):
         assert self.use_mono
         # apply hough line transform
         lines = cv2.HoughLinesP(
-            roi,
-            self.hough_rho,
-            self.hough_theta,
-            self.hough_threshold,
+            image=roi,
+            rho=self.hough_rho,
+            theta=self.hough_theta,
+            threshold=self.hough_threshold,
             minLineLength=self.hough_min_line_length,
-            maxLineGap=self.hough_max_line_gap)
+            maxLineGap=self.hough_max_line_gap
+        )
         final_image = np.zeros(roi.shape)
         if lines is not None:
             for x1, y1, x2, y2 in lines[0]:
                 cv2.line(
-                    final_image,
-                    (x1, y1),
-                    (x2, y2),
-                    255,
-                    self.hough_thickness
+                    img=final_image,
+                    pt1=(x1, y1),
+                    pt2=(x2, y2),
+                    color=255,
+                    thickness=self.hough_thickness
                 )
 
         final_image_message = LaneDetection.cv2_to_ros_message(

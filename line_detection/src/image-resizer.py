@@ -31,7 +31,10 @@ class ImageResizer(LaneDetection):
         if (cv2_image.shape[0] > self.image_height or
                 cv2_image.shape[1] > self.image_width):
             final_image = cv2.resize(
-                cv2_image, (self.image_width, self.image_height), 0, 0, 0
+                src=cv2_image,
+                dsize=(self.image_width, self.image_height),
+                fx=0,
+                fy=0
             )
         else:
             final_image = cv2_image
@@ -57,7 +60,6 @@ def main(args):
     # starts dynamic_reconfigure server
     srv = Server(LineDetectionConfig, ir.reconfigure_callback)
     rospy.spin()
-    cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     main(sys.argv)

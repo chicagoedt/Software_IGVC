@@ -53,14 +53,14 @@ class HistogramCalculator(LaneDetection):
         cv2_image = LaneDetection.ros_to_cv2_image(self, ros_image)
         roi = LaneDetection.get_roi(self, cv2_image)
         # convert from BGR to HSV
-        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(src=roi, code=cv2.COLOR_BGR2HSV)
 
         histogram = cv2.calcHist(
-            [hsv],
-            [0, 1],
-            None,
-            [180, 256],
-            [0, 179, 0, 255]
+            images=[hsv],
+            channels=[0, 1],
+            mask=None,
+            histSize=[180, 256],
+            ranges=[0, 179, 0, 255]
         )
 
         # publishes current histogram plot image

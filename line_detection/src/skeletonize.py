@@ -35,14 +35,17 @@ class Skeletonize(LaneDetection):
         # skeletonize image
         size = np.size(roi)
         skel = np.zeros(roi.shape, np.uint8)
-        element = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+        element = cv2.getStructuringElement(
+            shape=cv2.MORPH_CROSS,
+            ksize=(3, 3)
+        )
         # iteratively erode, dilate, subtract, then OR the image
         # until it's 1 pixel thick
         for i in range(self.max_erode_iterations):
-            eroded = cv2.erode(roi, element)
-            temp = cv2.dilate(eroded, element)
-            temp = cv2.subtract(roi, temp)
-            skel = cv2.bitwise_or(skel, temp)
+            eroded = cv2.erode(src=roi, kernel=element)
+            temp = cv2.dilate(src=eroded, kernel=element)
+            temp = cv2.subtract(src1=roi, src2=temp)
+            skel = cv2.bitwise_or(src1=skel, src2=temp)
             roi = eroded.copy()
 
             zeros = size - cv2.countNonZero(roi)
